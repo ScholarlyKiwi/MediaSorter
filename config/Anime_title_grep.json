@@ -1,12 +1,12 @@
 [
     {
         "title": "GROUP_TITLE_SEASONEPISODE",
-        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. -]+) - (S\\d\\dE\\d\\d)",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. \\!-]+) - (S\\d\\dE\\d\\d)",
         "groups": "title,seasonepisode"
     },
     {
         "title": "GROUP_TITLE_EPISODE",
-        "regex": "^(?:\\[[\\w ]+\\])? ([\\w -]+) (- \\d\\d)",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w -!]+) (- \\d\\d)",
         "groups": "title,episode",
         "replacers": [{
             "pattern": "{episode}",
@@ -14,5 +14,30 @@
             "replace": "- S{season}E{episode}"
             }
         ]
+    },
+    {
+        "title": "GROUP_TITLE_SEASONEPISODE_NODASH",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. \\!-]+) (S\\d\\dE\\d\\d)",
+        "groups": "title,seasonepisode"        
+    },
+    {
+        "title": "GROUP_TITLE_SEASONEPISODE_NODASH",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. !-]+) S(\\d)E(\\d\\d)",
+        "groups": "title,season,episode"
+    },
+    {
+        "title": "GROUP_TITLE_OVA",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. !-]+) (OVA)",
+        "groups": "title,episode"
+    },
+    {
+        "title": "DOTTITLE_SEASONEPISODE",
+        "regex": "^([\\w\\-.]+)[\\.]*(S\\d\\dE\\d\\d)",
+        "groups": "title,seasonepisode",
+        "replacers": [{
+            "pattern": ".",
+            "remover": "",
+            "replace": " "
+        }]
     }
 ]

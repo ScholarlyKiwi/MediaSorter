@@ -145,6 +145,8 @@ def get_episode_info(title, regex_db_obj):
             index = 0
             if regex_match.groups() == None:
                 return None
+            if len(title_groups) != len(regex_match.groups()):
+                return None
             while index < len(title_groups):
                 if regex_match.groups()[index] != None:
                     key = title_groups[index].lower().strip()
@@ -159,6 +161,7 @@ def get_episode_info(title, regex_db_obj):
                             # seasonepisdoe is the format S##E##
                             # retrieve the season in case we need it
                             temp = regex_match.groups()[index].strip()
+
                             temp_season = temp[1:3]
                             temp_episode = temp[-2:]
                         case "season":

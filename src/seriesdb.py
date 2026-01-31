@@ -37,11 +37,11 @@ class SeriesDB():
             raise Exception(f"Cannot add series {title} - Series DB not initialised")
         
         if subdirectory == None:
-            subdirectory = re.sub(r"[^\d\w]", "_", title)
+            subdirectory = title.trim()
 
         title_file = f"{re.sub(r"[^\d\w]","_", library)}__{re.sub(r"[^\d\w]", "_",title)}___series.json"
 
-        self._series_db[title] = { "title": title,
+        self._series_db[title.upper()] = { "title": title,
                                 "curr_season": curr_season, 
                                 "library": library, 
                                 "subdirectory": subdirectory,
@@ -50,13 +50,12 @@ class SeriesDB():
     def series(self, title):
         if self._series_db == None:
             raise Exception(f"Cannot return series {title} - Series DB not initalised")
-        if not self.exists(title):
+        if not self.exists(title.upper()):
             raise Exception(f"Cannot return series {title} - Series does not exist in the series DB")
-        
-        return self._series_db[title]
+        return self._series_db[title.upper()]
 
     def exists(self, title):
-        return title in self._series_db
+        return title.upper() in self._series_db
     
     def titles(self):
         return self._series_db.keys()
