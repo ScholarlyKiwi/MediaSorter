@@ -39,5 +39,10 @@
             "remover": "",
             "replace": " "
         }]
+    },
+    {
+        "title": "Erai-raws",
+        "regex": "^\\[Erai-raws\\] ([\\w\\d\\(\\) ]+) - (\\d\\d)",
+        "groups": "title,episode"
     }
 ]
