@@ -37,7 +37,7 @@ class SeriesDB():
             raise Exception(f"Cannot add series {title} - Series DB not initialised")
         
         if subdirectory == None:
-            subdirectory = title.trim()
+            subdirectory = title.strip()
 
         title_file = f"{re.sub(r"[^\d\w]","_", library)}__{re.sub(r"[^\d\w]", "_",title)}___series.json"
 
