@@ -1,6 +1,7 @@
 # Config
 logs/
 library_cache/*
+MediaSorter.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
