@@ -1,0 +1,18 @@
+[
+    {
+        "title": "GROUP_TITLE_SEASONEPISODE",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. -]+) - (S\\d\\dE\\d\\d)",
+        "groups": "title,seasonepisode"
+    },
+    {
+        "title": "GROUP_TITLE_EPISODE",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w -]+) (- \\d\\d)",
+        "groups": "title,episode",
+        "replacers": [{
+            "pattern": "{episode}",
+            "remover": "- ",
+            "replace": "- S{season}E{episode}"
+            }
+        ]
+    }
+]
