@@ -1,15 +1,21 @@
 from configparser import ConfigParser
+import os
 
 class EnvConfig:
     _instance = None
+    _library = None
+    _source = None
+    _dir_scan = None
+    _log_file = None 
+    _library_cache = None
+    _library_base = None
+    _logging_level = None
 
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(EnvConfig, cls).__new__(cls)
             cls._instance.config = ConfigParser()
             cls._instance.config.read('MediaSorter.ini')
-            cls._instance.library = None
-            cls._instance.source = None
         return cls._instance
     
     def __str__(cls):
@@ -18,13 +24,97 @@ class EnvConfig:
             items += f"\n[{section}]"
             for (key, val) in cls._instance.config.items(section):
                 items += f"\n   - {key}: {val}"
-        return f"\nLibrary = {cls._instance.library}\nSource = {cls._instance.source}\n--EnvConfig--:{items}"
+        return f"""    Dir_Scan = {cls._dir_scan}
+    Library = {cls._library}
+    Library_Base = {cls._library_base}
+    Library_Cache = {cls._library_cache}
+    Log_File = {cls._log_file}
+    Log_Level = {cls._logging_level}
+    Source = {cls._source}
+    --Config File--:{items}"""
 
-    def set_source(cls, source):
-        cls._instance.source = source
+    def __init__(cls):
+        for section in cls._instance.config.sections():
+            for (key,value) in cls._instance.config.items(section):
+                match key:
+                    case "log_file":
+                        cls.set_log_file(value)
+                    case "library_base":
+                        cls.set_library_base(value)
+                    case "library_cache":
+                        cls.set_library_cache(value)
+                    case "logging_level":
+                        cls.set_logging_level(value)
+
+    def __format_path(dir):
+        try:
+            if dir[0] == "/":
+                #Already as absolute path
+                return os.path.normpath(dir)
+            elif dir[0] == "~":
+                return os.path.expanduser(dir)
+            else:
+                return os.path.abspath(dir)
+        except Exception as e:
+            raise Exception(f"Invalid Path: {dir} - {e}")
+    
+    def __format_path(cls, dir):
+        try:
+            if dir[0] == "/":
+                #Already as absolute path
+                return os.path.normpath(dir)
+            elif dir[0] == "~":
+                return os.path.expanduser(dir)
+            else:
+                return os.path.abspath(dir)
+        except Exception as e:
+            raise Exception(f"Invalid Path: {dir} - {e}")
+        
+
+    def get_dir_scan(cls):
+        return cls._dir_scan
+
+    def set_dir_scan(cls, dir_scan):
+        cls._dir_scan = dir_scan
+
+    def get_library(cls):
+        return(cls._library)
 
     def set_library(cls, library):
-        cls._instance.library = library
+        if ".." in library or "~" in library:
+            raise Exception(f"Invalid library: {library}")
+        cls._library = cls.__format_path( os.path.join(cls.get_library_base(), library) )
+
+    def get_library_base(cls):
+        return(cls._library_base)
+
+    def set_library_base(cls, library_base):
+        cls._library_base = cls.__format_path(library_base)
+
+    def get_library_cache(cls):
+        return cls._library_cache
+
+    def set_library_cache(cls, library_cache):
+        cls._library_cache = cls.__format_path(library_cache)
+
+    def get_log_file(cls):
+        return cls._log_file
+    
+    def set_log_file(cls, log_file):
+        cls._log_file = cls.__format_path(log_file)
+
+    def get_logging_level(cls):
+        return cls._logging_level
+    
+    def set_logging_level(cls, logging_level):
+        cls._logging_level = logging_level
+
+    def get_source(cls):
+        return cls._source
+
+    def set_source(cls, source):
+        cls._source = cls.__format_path(source)
+
 
 
 if __name__ == "__main__":
