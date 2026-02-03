@@ -10,13 +10,13 @@ class EnvConfig:
     _library = None
     _library_dir = None
     _source = None
-    _dir_scan = None
     _log_file = None 
     _library_cache = None
     _library_base = None
     _logging_level = None
     _config_dir = None
     _ignore_directories = []
+    _test_run = False
     title_analyzer = TitleAnalyzer()
     series_db = SeriesDB()
     logger = None
@@ -35,7 +35,6 @@ class EnvConfig:
             for (key, val) in cls._instance.config.items(section):
                 items += f"\n   - {key}: {val}"
         return f"""    Config_Directory = {cls._config_dir}
-    Dir_Scan = {cls._dir_scan}
     Library = {cls._library}
     Library_Base = {cls._library_base}
     Library_Cache = {cls._library_cache}
@@ -82,11 +81,11 @@ class EnvConfig:
     def set_config_dir(cls, config_dir):
         cls._config_dir = config_dir
 
-    def get_dir_scan(cls):
-        return cls._dir_scan
+    def get_test_run(cls):
+        return cls._test_run
 
-    def set_dir_scan(cls, dir_scan):
-        cls._dir_scan = dir_scan
+    def set_test_run(cls, test_run):
+        cls._test_run = test_run
 
     def get_ignore_directories(cls):
         return cls._ignore_directories.copy()
