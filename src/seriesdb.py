@@ -10,6 +10,7 @@ class SeriesDB():
     _logger = None
     _db_directory = None
     _library = None
+    _update = []
 
     def __new__(self):
         if self._instance is None:
@@ -28,6 +29,7 @@ class SeriesDB():
             self._db_directory = norm_db_directory
         else:
             raise Exception(f"Configuration Error - library cache directory is invalid: {norm_db_directory}")
+        self._update.clear()
 
     def add_series(self, title, curr_season = '00', library = '', subdirectory = None):
         if title == None:
@@ -41,49 +43,53 @@ class SeriesDB():
 
         title_file = f"{re.sub(r"[^\d\w]","_", library)}__{re.sub(r"[^\d\w]", "_",title)}___series.json"
 
-        self._series_db[title.upper()] = { "title": title,
+        title_upper = title.upper()
+
+        self._series_db[title_upper] = { "title": title,
                                 "curr_season": curr_season, 
                                 "library": library, 
                                 "subdirectory": subdirectory,
                                 "series_file": title_file}
+        print(f"Adding {title_upper}")
+        self._update.append(title_upper)
 
     def series(self, title):
+        title = title.upper()
         if self._series_db == None:
             raise Exception(f"Cannot return series {title} - Series DB not initalised")
-        if not self.exists(title.upper()):
+        if not self.exists(title):
             raise Exception(f"Cannot return series {title} - Series does not exist in the series DB")
-        return self._series_db[title.upper()]
+        return self._series_db[title]
 
     def exists(self, title):
-        return title.upper() in self._series_db
+        return title.upper() in self._series_db.keys()
     
     def titles(self):
         return self._series_db.keys()
 
-    def save_series_db(self):
-        for title in self._series_db.keys():
-            self.save_series_file(title)
+    def save_series_files(self):
 
-    def save_series_file(self, title):
-        if not self.exists(title):
-            self._logger.warning(f"Attempt to update series file for series that does not exist {title}")
-        series = self.series(title)
-        
-        series_file = series["series_file"]
-        if series_file == None:
-            raise Exception(f"Unable to create a name for a series file for {title}")
-        
-        file_path = os.path.join(self._db_directory, series_file)
-        # There isn't a way for the series to be updated in the script so the data in the
-        # files should be the same or newer than the data stored in the series DB. So only
-        # write new files.
-        if not os.path.exists(file_path):
-            try:
-                with open(file_path, "w") as f:
-                    f.write(json.dumps(series))
+        for title in self._update:
 
-            except Exception as e:
-                raise (f"Unable to save series {title} file: {file_path} Reason: {e}")
+            if not self.exists(title):
+                self._logger.warning(f"Attempt to save series file for series that does not exist {title}")
+
+            series = self.series(title)
+            
+            series_file = series["series_file"]
+            if series_file == None:
+                raise Exception(f"Unable to create a filename for a series file for {title}")
+            
+            file_path = os.path.join(self._db_directory, series_file)
+
+            if not os.path.exists(file_path):
+                try:
+                    with open(file_path, "w") as f:
+                        f.write(json.dumps(series))
+
+                except Exception as e:
+                    raise (f"Unable to save series {title} file: {file_path} Reason: {e}")
+        self._update.clear()
             
     def load_series_files(self):
         if not os.path.exists(self._db_directory):
@@ -97,3 +103,11 @@ class SeriesDB():
             with open(file_path, 'r') as f:
                 series = json.load(f)
                 self._series_db[series["title"]] = series
+
+    def update_series_season(self, title, curr_season): 
+        if not os.path.exists(self._db_directory):
+            raise Exception(f"Cannot update series season: library cache is not initialised")
+        if not self.exists(title):
+            raise Exception(f"Cannot update series season: series does not exist")
+        self._series_db[title.upper()]["curr_season"] = curr_season
+        self._update.append(title) 

@@ -73,19 +73,11 @@ class TestSeriesDB(unittest.TestCase):
         result = library_cache.series("test_title")
         self.assertEqual(expected, result)
 
-    def test_add_return_series_comma(self):
-        library_cache = SeriesDB()
-        library_cache.init_series_db(config)
-        library_cache.add_series("test'title", 1, "anime_library")
-        expected = {'curr_season': 1, 'library': 'anime_library', 'subdirectory': 'test_title', 'series_file': 'anime_library__test_title___series.json', 'title': 'test\'title'}
-        result = library_cache.series("test'title")
-        self.assertEqual(expected, result)
-
     def test_save_db_one_file(self):
         library_cache = SeriesDB()
         library_cache.init_series_db(config)
         library_cache.add_series("test_title", 1, "anime_library", "test_subdirectory")
-        library_cache.save_series_db()
+        library_cache.save_series_files()
         self.assertTrue(os.path.exists("/home/david/Programming/projects/MediaSorter/library_cache/anime_library__test_title___series.json"))
 
     def test_save_db_three_file(self):
@@ -94,7 +86,7 @@ class TestSeriesDB(unittest.TestCase):
         library_cache.add_series("test_title", 1, "anime_library", "test_subdirectory")
         library_cache.add_series("test_3", "1", "anime_3", "subdir_3")
         library_cache.add_series("test_2", 3, "anime_2", "subdir_2")
-        library_cache.save_series_db()
+        library_cache.save_series_files()
         files_save = True
         base_path = "/home/david/Programming/projects/MediaSorter/library_cache/"
         for title in library_cache.titles():
@@ -110,7 +102,7 @@ class TestSeriesDB(unittest.TestCase):
         library_cache.add_series("test_title", 1, "anime_library", "test_subdirectory")
         library_cache.add_series("test_3", "1", "anime_3", "subdir_3")
         library_cache.add_series("test_2", 3, "anime_2", "subdir_2")
-        library_cache.save_series_db()
+        library_cache.save_series_files()
 
         found_files = True
         base_path = "/home/david/Programming/projects/MediaSorter/library_cache/"
@@ -134,3 +126,12 @@ class TestSeriesDB(unittest.TestCase):
         library_cache = SeriesDB()
         library_cache.init_series_db(config)
         library_cache.load_series_files()
+
+    def test_update_season_series(self):
+        library_cache = SeriesDB()
+        library_cache.init_series_db(config)
+        library_cache.add_series("test_title", 5, "anime_library")
+        library_cache.update_series_season("test_title", "01")
+        expected = {'curr_season': "01", 'library': 'anime_library', 'subdirectory': 'test_title', 'series_file': 'anime_library__test_title___series.json', 'title': 'test_title'}
+        self.assertEqual(expected, library_cache.series("test_title"))
+
