@@ -19,6 +19,9 @@ def start_sort(config):
         sort_directory(source, config)
     else:
         raise Exception(f"")
+    
+    if not config.get_test_run:
+        config.series_db.save_series_files()
 
 
 def check_paths(config):
@@ -81,9 +84,10 @@ def sort_file(path, config):
             season = "00"
 
     if not series_db.exists(series_title):
-        series_db.add_series(series_title, library=config.get_library())
-        series_db.save_series_file(series_title)
-    
+        series_db.add_series(series_title, library=config.get_library(), curr_season = season)
+    elif series_db.series[series_title]["curr_season"] != season:
+        series_db.series(series_title).update_series_season(season)
+   
     config.logger.debug(f"\n    file_name = {file_name}\n    series = {series_title}\n    episode = {episode}\n    season = {season}\n    replacers = {replacers}")
 
     dest_file_name = file_name
@@ -101,7 +105,7 @@ def sort_file(path, config):
             formatted_pattern = pattern.format(episode=episode, series=series_title, season=season)
             episode_removed = formatted_pattern.replace(remover, '')
 
-            formatted_replace = replace.format(episode=episode_removed, series=series_title, season=season)
+            formatted_replace = replace.format(episode=episode_removed, curr_season=series_title, season=season)
 
             dest_file_name = file_name.replace(formatted_pattern, formatted_replace)
 
@@ -122,8 +126,9 @@ def sort_file(path, config):
     if dest_path == None:
         raise Exception(f"Lost the destination for {file_name}")
     try:
-        dest = shutil.move(path, dest_path)
-        print(f"Moved to {dest}")
+        if not config.get_test_run():
+            dest = shutil.move(path, dest_path)
+            print(f"Moved to {dest}")
     except Exception as e:
         raise Exception(f"Error moving {file_name} - {e}")
     return
