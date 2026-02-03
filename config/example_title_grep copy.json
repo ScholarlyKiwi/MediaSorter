@@ -1,0 +1,28 @@
+[
+    {
+        "title": "EXAMPLE_WITH_TITLE_AND_COMBINED_SEASON_AND_EPISODE",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. \\!-]+) - (S\\d\\dE\\d\\d)",
+        "groups": "title,seasonepisode"
+    },
+    {
+        "title": "EXAMPLE_WITH_TITLE_AND_EPISODE_THAT_ADDS_SEASON",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w -!]+) (- \\d\\d)",
+        "groups": "title,episode",
+        "replacers": [{
+            "pattern": "{episode}",
+            "remover": "- ",
+            "replace": "- S{season}E{episode}"
+            }
+        ]
+    },
+    {
+        "title": "FIRST_EXAMPLE_BUT_NO_BETWEEN_GROUPS_WITH_NO_DASH",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. \\!-]+) (S\\d\\dE\\d\\d)",
+        "groups": "title,seasonepisode"        
+    },
+    {
+        "title": "EXAMPLE_TITLE_SEASON_AND_EPISODE_AND_WITH_NO_DASH",
+        "regex": "^(?:\\[[\\w ]+\\])? ([\\w,. !-]+) S(\\d)E(\\d\\d)",
+        "groups": "title,season,episode"
+    }
+]

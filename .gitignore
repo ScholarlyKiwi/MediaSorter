@@ -2,6 +2,7 @@
 logs/
 library_cache/*
 MediaSorter.ini
+Anime_title_grep.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
