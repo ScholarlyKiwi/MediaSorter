@@ -12,7 +12,7 @@ def main():
         print("Usage:")
         print("     main.py - {source directory/file} {library Path} {options}")
         print("Options:")
-        print("     --dir_scan   = sorts all files and directories in the source directory.")
+        print("     --test_run   = testing mode that prevents moving files or saving library cache.")
         return
 
     print(f"Media Sorter Started.\n")
@@ -20,18 +20,19 @@ def main():
     try:
         environ = EnvConfig()
 
+        logging.basicConfig(level=logging.INFO,
+                            format="%(asctime)s %(levelname)s: %(message)s")
         environ.logger = logging.getLogger("mediasorter")
-        environ.logger.setLevel(getattr(logging, environ.get_logging_level()))
-
         log_handler = TimedRotatingFileHandler(environ.get_log_file(), when="D", interval=1, backupCount=7)
         formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
         log_handler.setFormatter(formatter)
+        log_handler.setLevel(getattr(logging, environ.get_logging_level()))
 
         environ.logger.addHandler(log_handler)
 
         environ.set_source(sys.argv[1])
         environ.set_library(sys.argv[2])
-        environ.set_dir_scan("--dir_scan" in sys.argv)
+        environ.set_test_run("--test_run" in sys.argv)
 
     except Exception as e:
         with open("media_sorter_exception.log", "w"):
