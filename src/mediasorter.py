@@ -85,7 +85,7 @@ def sort_file(path, config):
 
     if not series_db.exists(series_title):
         series_db.add_series(series_title, library=config.get_library(), curr_season = season)
-    elif series_db.series[series_title]["curr_season"] != season:
+    elif series_db.series(series_title)["curr_season"] != season:
         series_db.series(series_title).update_series_season(season)
    
     config.logger.debug(f"\n    file_name = {file_name}\n    series = {series_title}\n    episode = {episode}\n    season = {season}\n    replacers = {replacers}")

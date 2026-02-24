@@ -30,6 +30,7 @@ class SeriesDB():
         else:
             raise Exception(f"Configuration Error - library cache directory is invalid: {norm_db_directory}")
         self._update.clear()
+        self.load_series_files()
 
     def add_series(self, title, curr_season = '00', library = '', subdirectory = None):
         if title == None:
