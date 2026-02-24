@@ -102,7 +102,7 @@ class SeriesDB():
             file_path = os.path.join(self._db_directory, object)
             with open(file_path, 'r') as f:
                 series = json.load(f)
-                self._series_db[series["title"]] = series
+                self._series_db[series["title"].upper()] = series
 
     def update_series_season(self, title, curr_season): 
         if not os.path.exists(self._db_directory):

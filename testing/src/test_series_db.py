@@ -135,3 +135,8 @@ class TestSeriesDB(unittest.TestCase):
         expected = {'curr_season': "01", 'library': 'anime_library', 'subdirectory': 'test_title', 'series_file': 'anime_library__test_title___series.json', 'title': 'test_title'}
         self.assertEqual(expected, library_cache.series("test_title"))
 
+    def test_load_db(self):
+        library_cache = SeriesDB()
+        library_cache.init_series_db(config)
+        library_cache.load_series_files()
+        self.assertEqual("01", library_cache.series("MAOU NO MUSUME WA YASASHI SUGIRU!!")['curr_season'])
