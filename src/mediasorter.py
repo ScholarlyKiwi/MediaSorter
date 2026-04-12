@@ -18,10 +18,10 @@ def start_sort(config):
     elif os.path.isdir(source):
         sort_directory(source, config)
     else:
-        raise Exception(f"")
-    
-    if not config.get_test_run:
-        config.series_db.save_series_files()
+        raise Exception(f"Unindentified source type: {source}")
+
+    print (f"\nSaving series database\n")    
+    config.series_db.save_series_files()
 
 
 def check_paths(config):
