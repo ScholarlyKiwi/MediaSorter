@@ -35,9 +35,9 @@ def main():
         environ.set_test_run("--test_run" in sys.argv)
 
     except Exception as e:
-        with open("media_sorter_exception.log", "w"):
-            print("Media Sorter encoutered an error during startup:")
-            print(f"{e}")
+        print("Media Sorter encoutered an error during startup:")
+        print(f"{e}")
+        return
 
     try:
         environ.logger.debug(f"\nConfig: \n{environ}")
