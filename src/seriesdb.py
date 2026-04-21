@@ -101,9 +101,12 @@ class SeriesDB():
         library_pattern = f"{self._library}*.json"
         for object in Path(self._db_directory).glob(library_pattern):
             file_path = os.path.join(self._db_directory, object)
-            with open(file_path, 'r') as f:
-                series = json.load(f)
-                self._series_db[series["title"].upper()] = series
+            try:
+                with open(file_path, 'r') as f:
+                    series = json.load(f)
+                    self._series_db[series["title"].upper()] = series
+            except Exception as e:
+                raise Exception(f"Error loading library file: {file_path}")
 
     def update_series_season(self, title, curr_season): 
         if not os.path.exists(self._db_directory):
