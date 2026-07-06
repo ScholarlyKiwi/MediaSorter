@@ -80,8 +80,8 @@ def sort_file(path, config):
             season = series_db.series(series_title)["curr_season"]
         
         if season == None:
-            # if we still can't figure out the season, assume season 00.
-            season = "00"
+            # if we still can't figure out the season, assume season 01.
+            season = "01"
 
     if not series_db.exists(series_title):
         series_db.add_series(series_title, library=config.get_library(), curr_season = season)

@@ -32,7 +32,7 @@ class SeriesDB():
         self._update.clear()
         self.load_series_files()
 
-    def add_series(self, title, curr_season = '00', library = '', subdirectory = None):
+    def add_series(self, title, curr_season = '01', library = '', subdirectory = None):
         if title == None:
             raise Exception("Cannot add series to db without a title")
         
